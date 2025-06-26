@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>스테이지 미로 게임 - 어려운 2스테이지</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 30px;
+    }
+    #maze {
+      display: grid;
+      grid-template-columns: repeat(7, 40px);
+      grid-template-rows: repeat(7, 40px);
+      gap: 2px;
+    }
+    .cell {
+      width: 40px;
+      height: 40px;
+      text-align: center;
+      line-height: 40px;
+      font-size: 24px;
+    }
+    .wall {
+      background-color: #333;
+    }
+    .player {
+      background-color: #00cc66;
+    }
+    .goal {
+      background-color: #ffcc00;
+    }
+    .bomb {
+      background-color: red;
+    }
+    #message {
+      margin-top: 20px;
+      font-size: 20px;
+      height: 30px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>💣 스테이지 미로 게임</h1>
+<p>방향키로 이동 | (2스테이지부터는 폭탄으로 벽을 부술 수 없습니다)</p>
+<div id="maze"></div>
+<div id="message"></div>
+
+<script>
+  const stages = [
+    // 1스테이지 (기존과 동일)
+    [
+      ['S', 0, 1, 1, 1, 1, 1],
+      [1, 0, 1, 0, 0, 0, 1],
+      [1, 0, 1, 1, 1, 0, 1],
+      [1, 0, 0, 0, 1, 0, 1],
+      [1, 1, 1, 0, 1, 0, 1],
+      [1, 0, 0, 0, 1, 0, 'G'],
+      [1, 1, 1, 1, 1, 1, 1],
+    ],
+    // 2스테이지 - 히든 없음, 벽 많고 꼬임
+    [
+      ['S', 0, 1, 1, 1, 1, 1],
+      [1, 0, 0, 1, 0, 0, 1],
+      [1, 1, 0, 1, 0, 1, 1],
+      [1, 1, 0, 0, 0, 1, 1],
+      [1, 0, 1, 'G', 0, 0, 1],
+      [1, 0, 1, 0, 1, 0, 0],
+      [1, 1, 1, 1, 1, 1, 1],
+    ],
+    // 3스테이지, 4, 5는 기존과 동일
+    [
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      ['S', 0, 0, 1, 1, 1, 1, 0],
+      [1, 1, 0, 1, 0, 0, 1, 0],
+      [1, 0, 0, 0, 1, 0, 1, 0],
+      [1, 0, 1, 1, 0, 0, 1, 0],
+      [1, 0, 0, 0, 1, 0, 1, 0],
+      [1, 1, 1, 0, 1, 0, 'G', 0],
+      [1, 1, 1, 1, 1, 1, 1],
+    ],
+    [
+      ['S', 1, 1, 1, 1, 1, 1],
+      [0, 0, 0, 0, 1, 0, 1],
+      [1, 1, 1, 0, 1, 0, 1],
+      [1, 0, 0, 0, 1, 0, 1],
+      [1, 0, 1, 1, 1, 0, 1],
+      [1, 'G', 1, 0, 0, 0, 1],
+      [1, 1, 1, 1, 1, 1, 1],
+    ],
+    [
+      ['S', 1, 1, 1, 1, 1, 1],
+      [0, 0, 0, 0, 1, 0, 1],
+      [1, 1, 1, 0, 1, 0, 1],
+      [1, 0, 0, 0, 1, 0, 1],
+      [1, 0, 1, 1, 1, 0, 1],
+      [1, 0, 1, 0, 0, 0, 'G'],
+      [1, 1, 1, 1, 1, 1, 1],
+    ],
+  ];
+
+  let currentStage = 0;
+  let map = JSON.parse(JSON.stringify(stages[currentStage]));
+  let playerPos = findStart(map);
+  let bombs = [];
+
+  const mazeEl = document.getElementById("maze");
+  const messageEl = document.getElementById("message");
+
+  function findStart(map) {
+    for (let y = 0; y < map.length; y++) {
+      for (let x = 0; x < map[y].length; x++) {
+        if (map[y][x] === 'S') return { x, y };
+      }
+    }
+    return { x: 0, y: 0 };
+  }
+
+  function renderMaze() {
+    mazeEl.innerHTML = "";
+    for (let y = 0; y < map.length; y++) {
+      for (let x = 0; x < map[y].length; x++) {
+        const cell = document.createElement("div");
+        cell.classList.add("cell");
+        if (map[y][x] === 1) cell.classList.add("wall");
+        if (x === playerPos.x && y === playerPos.y) {
+          cell.classList.add("player");
+          cell.textContent = '🟩';
+        } else if (map[y][x] === 'G') {
+          cell.classList.add("goal");
+          cell.textContent = '🎯';
+        } else if (bombs.some(b => b.x === x && b.y === y)) {
+          cell.classList.add("bomb");
+          cell.textContent = '💣';
+        }
+        mazeEl.appendChild(cell);
+      }
+    }
+  }
+
+  function movePlayer(dx, dy) {
+    const newX = playerPos.x + dx;
+    const newY = playerPos.y + dy;
+    if (
+      newY >= 0 && newY < map.length &&
+      newX >= 0 && newX < map[0].length &&
+      map[newY][newX] !== 1
+    ) {
+      playerPos = { x: newX, y: newY };
+
+      if (map[newY][newX] === 'G') {
+        nextStage();
+      }
+      renderMaze();
+    }
+  }
+
+  function placeBomb() {
+    // 2스테이지부터는 폭탄으로 벽 부수기 불가
+    if (currentStage >= 1) {
+      messageEl.textContent = "🚫 이 스테이지에서는 폭탄으로 벽을 부술 수 없습니다!";
+      return;
+    }
+    const { x, y } = playerPos;
+    if (!bombs.some(b => b.x === x && b.y === y)) {
+      bombs.push({ x, y });
+      renderMaze();
+      setTimeout(() => explodeBomb(x, y), 1000);
+    }
+  }
+
+  function explodeBomb(x, y) {
+    bombs = bombs.filter(b => !(b.x === x && b.y === y));
+    const dirs = [
+      { dx: 0, dy: -1 },
+      { dx: 0, dy: 1 },
+      { dx: -1, dy: 0 },
+      { dx: 1, dy: 0 }
+    ];
+    for (const { dx, dy } of dirs) {
+      const nx = x + dx;
+      const ny = y + dy;
+      if (
+        ny >= 0 && ny < map.length &&
+        nx >= 0 && nx < map[0].length &&
+        map[ny][nx] === 1
+      ) {
+        // 2스테이지부터는 부수기 안함
+        if (currentStage === 0) {
+          map[ny][nx] = 0;
+        }
+      }
+    }
+    renderMaze();
+  }
+
+  function nextStage() {
+    currentStage++;
+    if (currentStage >= stages.length) {
+      messageEl.innerHTML = "🎉 모든 스테이지를 클리어했습니다!";
+      document.removeEventListener("keydown", handleKey);
+      return;
+    }
+    map = JSON.parse(JSON.stringify(stages[currentStage]));
+    playerPos = findStart(map);
+    bombs = [];
+    messageEl.innerHTML = `🚩 스테이지 ${currentStage + 1} 시작!`;
+    renderMaze();
+  }
+
+  function handleKey(e) {
+    switch (e.key) {
+      case "ArrowUp": movePlayer(0, -1); break;
+      case "ArrowDown": movePlayer(0, 1); break;
+      case "ArrowLeft": movePlayer(-1, 0); break;
+      case "ArrowRight": movePlayer(1, 0); break;
+      case " ": placeBomb(); break;
+    }
+  }
+
+  document.addEventListener("keydown", handleKey);
+  renderMaze();
+</script>
+
+</body>
+</html>

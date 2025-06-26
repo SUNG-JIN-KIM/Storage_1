@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>숫자 맞추기 게임</title>
+    <style>
+        body {
+            background-color: #222;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 50px;
+        }
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+        }
+        #message {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>🎯 숫자 맞추기 게임</h1>
+<p>1부터 100 사이의 숫자를 맞춰보세요!</p>
+<input type="number" id="guess" min="1" max="100" />
+<button onclick="checkGuess()">확인</button>
+<div id="message"></div>
+
+<script>
+    const answer = Math.floor(Math.random() * 100) + 1;
+    let tries = 0;
+
+    function checkGuess() {
+        const userGuess = parseInt(document.getElementById("guess").value);
+        const message = document.getElementById("message");
+        tries++;
+
+        if (isNaN(userGuess)) {
+            message.textContent = "숫자를 입력해주세요!";
+        } else if (userGuess < 1 || userGuess > 100) {
+            message.textContent = "1부터 100 사이의 숫자만 입력 가능합니다.";
+        } else if (userGuess < answer) {
+            message.textContent = "Up!!";
+        } else if (userGuess > answer) {
+            message.textContent = "Down!";
+        } else {
+            message.innerHTML = `🎉 Congratulations!!<br>시도 횟수: ${tries}번`;
+        }
+    }
+</script>
+
+</body>
+</html>

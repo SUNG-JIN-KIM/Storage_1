@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Awesome한 계산기</title>
+    <style>
+        @font-face {
+            font-family: 'PFStardustExtraBold';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2506-1@1.0/PFStardustExtraBold.woff2') format('woff2');
+            font-weight: 800;
+            font-style: normal;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1e1e2f;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        form.calculator-form {
+            background-color: #2c2c3e;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-family: 'PFStardustExtraBold', sans-serif;
+            font-size: 2em;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #fdd835;
+        }
+
+        label {
+            display: block;
+            margin-top: 20px;
+            margin-bottom: 5px;
+            font-size: 0.95em;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            color: #000000;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 1em;
+            line-height: 1.5;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #fdd835;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #ffe85d;
+        }
+
+        .message-box {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .error {
+            background-color: #d32f2f;
+            color: #fff;
+        }
+
+        .result {
+            background-color: #388e3c;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+<form class="calculator-form" th:action="@{/calculate}" method="post">
+    <h1>계산기</h1>
+
+    <label for="num1">첫 번째 숫자:</label>
+    <input type="number" step="any" id="num1" name="num1" required th:value="${num1}" />
+
+    <label for="num2">두 번째 숫자:</label>
+    <input type="number" step="any" id="num2" name="num2" required th:value="${num2}" />
+
+    <label for="operation">연산 선택:</label>
+    <select id="operation" name="operation">
+        <option value="add" th:selected="${operation == 'add'}">덧셈 (+)</option>
+        <option value="subtract" th:selected="${operation == 'subtract'}">뺄셈 (-)</option>
+        <option value="multiply" th:selected="${operation == 'multiply'}">곱셈 (*)</option>
+        <option value="divide" th:selected="${operation == 'divide'}">나눗셈 (/)</option>
+    </select>
+
+    <button type="submit">계산하기</button>
+
+    <div th:if="${errorMessage != null}" class="message-box error">
+        <h2>Error: <span th:text="${errorMessage}"></span></h2>
+    </div>
+
+    <div th:if="${result}" class="message-box result">
+        <h2>결과: <span th:text="${result}"></span></h2>
+    </div>
+</form>
+</body>
+</html>
