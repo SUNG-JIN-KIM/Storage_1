@@ -1,29 +1,23 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>나만의 페이지</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Roboto + Maplestory 폰트 -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet" />
     <style>
-        /* ✅ 메이플스토리 OTF Bold 폰트 선언 */
         @font-face {
           font-family: 'MaplestoryOTFBold';
           src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/MaplestoryOTFBold.woff') format('woff');
           font-weight: normal;
           font-style: normal;
         }
-
         body {
           margin: 0;
           font-family: 'MaplestoryOTFBold', 'Roboto', sans-serif;
           background-color: #1e1e2f;
           color: #fff;
         }
-
         .navbar {
           background-color: #2c2c3c;
           padding: 16px 24px;
@@ -31,122 +25,115 @@
           justify-content: space-between;
           align-items: center;
         }
-
         .navbar h1 {
           font-size: 1.5em;
         }
-
         .main-content {
           padding: 40px 24px;
           text-align: center;
           animation: fadeIn 0.6s ease;
         }
-
         .main-content h2 {
           font-size: 2em;
           margin-bottom: 10px;
         }
-
         .main-content p {
           font-size: 1.1em;
           color: #ccc;
           margin-bottom: 30px;
         }
-
         .recent-box {
           color: #ccc;
           margin-bottom: 30px;
         }
-
         .section {
           margin: 30px auto 50px;
           max-width: 1000px;
           padding: 0 10px;
         }
-
         .section h3 {
           text-align: left;
           font-size: 1.2em;
           margin-bottom: 10px;
         }
-
         .card-grid {
           display: flex;
           flex-wrap: wrap;
           gap: 20px;
           justify-content: center;
         }
-
         .card {
           background-color: #2d2d3a;
           border-radius: 10px;
           padding: 20px;
-          width: 200px;
+          width: 220px;
           text-align: center;
           box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
           transition: transform 0.2s;
         }
-
         .card:hover {
           background-color: #3a3a4d;
           transform: translateY(-4px);
         }
-
         .card img {
           width: 48px;
           height: 48px;
           margin-bottom: 10px;
         }
-
-        .card a {
-          display: block;
+        .card a,
+        .card .dual-buttons button {
+          display: inline-block;
           margin-top: 8px;
+          margin: 4px 4px;
           text-decoration: none;
           color: #fff;
           background-color: #1a73e8;
           padding: 8px 12px;
           border-radius: 6px;
           transition: background 0.2s;
+          border: none;
+          font-size: 0.9em;
+          cursor: pointer;
         }
-
-        .card a:hover {
+        .card a:hover,
+        .card .dual-buttons button:hover {
           background-color: #125ecf;
         }
-
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(20px); }
-          to   { opacity: 1; transform: translateY(0); }
+          to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-
-<!-- 상단 -->
 <div class="navbar">
     <h1>🚀 나만의 페이지</h1>
 </div>
 
-<!-- 본문 -->
 <div class="main-content">
     <h2>환영합니다 😄</h2>
     <p>필요한 기능을 아래에서 선택하세요.</p>
-
     <div class="recent-box">
         최근 사용한 기능: <span id="recentFeature">없음</span>
     </div>
-
-    <!-- 섹션 출력 위치 -->
     <div id="featureSections"></div>
 </div>
 
-<!-- 기능 데이터 + 렌더링 -->
 <script>
     const featureData = [
       {
         title: "📦 기본 기능",
         items: [
-          { name: "계산기", icon: "https://img.icons8.com/fluency/48/calculator.png", link: "/calculator" },
-          { name: "회원 등록", icon: "https://img.icons8.com/color/48/name.png", link: "/register" }
+          {
+            name: "계산기",
+            icon: "https://img.icons8.com/fluency/48/calculator.png",
+            type: "calculator" // 이 부분으로 구분
+          },
+          {
+            name: "회원 등록",
+            icon: "https://img.icons8.com/color/48/name.png",
+            link: "/register"
+          }
         ]
       },
       {
@@ -160,18 +147,17 @@
         title: "📄 기타 페이지",
         items: [
           { name: "헬로", icon: "https://img.icons8.com/color/48/speech-bubble--v1.png", link: "/hellos" },
-          { name: "KSJ", icon: "https://img.icons8.com/color/48/person-male.png", link: "/ksj" }
+          { name: "KSJ", icon: "https://img.icons8.com/color/48/person-male.png", link: "/ksj" },
+          { name: "ToDo 리스트", icon: "https://img.icons8.com/color/48/task.png", link: "/todo" }
         ]
       }
     ];
 
     function renderSections() {
       const container = document.getElementById("featureSections");
-
       featureData.forEach(section => {
         const sectionDiv = document.createElement("div");
         sectionDiv.className = "section";
-
         const title = document.createElement("h3");
         title.textContent = section.title;
         sectionDiv.appendChild(title);
@@ -192,14 +178,37 @@
           name.textContent = item.name;
           card.appendChild(name);
 
-          const link = document.createElement("a");
-          link.href = item.link;
-          link.textContent = "이동";
-          link.onclick = () => {
-            localStorage.setItem("recentFeature", item.name);
-          };
+          if (item.type === "calculator") {
+            const btnContainer = document.createElement("div");
+            btnContainer.className = "dual-buttons";
 
-          card.appendChild(link);
+            const btnInput = document.createElement("button");
+            btnInput.textContent = "입력식 계산기";
+            btnInput.onclick = () => {
+              localStorage.setItem("recentFeature", "입력식 계산기");
+              window.location.href = "/calculator";
+            };
+
+            const btnButton = document.createElement("button");
+            btnButton.textContent = "버튼식 계산기";
+            btnButton.onclick = () => {
+              localStorage.setItem("recentFeature", "버튼식 계산기");
+              window.location.href = "/button-calculator";
+            };
+
+            btnContainer.appendChild(btnInput);
+            btnContainer.appendChild(btnButton);
+            card.appendChild(btnContainer);
+          } else {
+            const link = document.createElement("a");
+            link.href = item.link;
+            link.textContent = "이동";
+            link.onclick = () => {
+              localStorage.setItem("recentFeature", item.name);
+            };
+            card.appendChild(link);
+          }
+
           grid.appendChild(card);
         });
 
@@ -214,6 +223,5 @@
       renderSections();
     };
 </script>
-
 </body>
 </html>

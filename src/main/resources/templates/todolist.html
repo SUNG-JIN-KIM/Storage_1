@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>오늘 할 일 정리하기</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+          --primary: #3f8efc;
+          --primary-dark: #2b6cc3;
+          --danger: #e74c3c;
+          --completed: #aaa;
+          --bg: #f4f6f8;
+          --text: #333;
+          --border: #ddd;
+          --radius: 10px;
+          --shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+
+        body {
+          margin:0;
+          padding:0;
+          font-family:'Inter',sans-serif;
+          background:var(--bg);
+          color:var(--text);
+          transition:background 0.3s,color 0.3s;
+        }
+
+        body.dark {
+          background:#1e1e2f;
+          color:#eee;
+        }
+        body.dark .container {
+          background:#2b2b3c;
+        }
+        body.dark input, body.dark select {
+          background:#444;
+          color:#eee;
+          border:1px solid #666;
+        }
+        body.dark .todo-list li {
+          background:#3a3a4f;
+        }
+        body.dark .task-completed {
+          background:#444a5a;
+        }
+
+        .container {
+          max-width:600px;
+          margin:60px auto;
+          padding:40px;
+          background:#fff;
+          border-radius:var(--radius);
+          box-shadow:var(--shadow);
+        }
+
+        h1 {
+          font-family:'Jua',sans-serif;
+          text-align:center;
+          color:var(--primary-dark);
+        }
+
+        .subtitle {
+          text-align:center;
+          color:#666;
+        }
+
+        .mode-toggle {
+          float:right;
+          background:transparent;
+          border:none;
+          font-size:20px;
+          cursor:pointer;
+        }
+
+        .filter-group {
+          display:flex;
+          justify-content:center;
+          gap:8px;
+          margin:10px 0;
+        }
+
+        .filter-group button {
+          background:var(--primary);
+          color:#fff;
+          border:none;
+          padding:6px 12px;
+          border-radius:var(--radius);
+          cursor:pointer;
+        }
+        .filter-group button:hover,
+        .filter-group button.active {
+          background:var(--primary-dark);
+        }
+
+        .current-category {
+          text-align:center;
+          font-size:14px;
+          color:#555;
+          margin:10px 0;
+        }
+
+        .category-badge {
+          background:#eee;
+          color:#555;
+          font-size:12px;
+          padding:2px 8px;
+          border-radius:12px;
+          border:1px solid #ccc;
+        }
+
+        form {
+          display: flex;
+          gap: 10px;
+          margin-bottom: 20px;
+          flex-wrap: wrap;
+        }
+
+        input[type="text"], select {
+          flex-grow: 1;
+          padding: 10px 14px;
+          font-size: 16px;
+          border: 1px solid var(--border);
+          border-radius: var(--radius);
+          outline: none;
+          transition: border-color 0.2s ease;
+          min-width: 0;
+        }
+
+        input[type="text"]:focus, select:focus {
+          border-color: var(--primary);
+        }
+
+        ::placeholder {
+          color: #bbb;
+          font-size: 14px;
+        }
+
+        button {
+          background-color: var(--primary);
+          color: white;
+          border: none;
+          padding: 10px 16px;
+          font-size: 14px;
+          border-radius: var(--radius);
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+          white-space: nowrap;
+        }
+
+        button:hover {
+          background-color: var(--primary-dark);
+        }
+
+        .todo-list ul {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+        }
+
+        @keyframes fadeInSlide {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        .todo-list li {
+          display: flex;
+          align-items: center;
+          padding: 12px 0;
+          border-bottom: 1px solid var(--border);
+          gap: 12px;
+          flex-wrap: wrap;
+          border-left: 6px solid var(--item-color, var(--primary));
+          background-color: #fff;
+          padding-left: 12px;
+          border-radius: var(--radius);
+          margin-bottom: 10px;
+          animation: fadeInSlide 0.4s ease;
+          transition: background-color 0.3s ease;
+          cursor: grab;
+        }
+
+        input[type="checkbox"] {
+          width: 20px;
+          height: 20px;
+          accent-color: var(--primary);
+          cursor: pointer;
+        }
+
+        .task-text {
+          flex-grow: 1;
+          font-size: 16px;
+          transition: all 0.3s ease;
+        }
+
+        .task-completed {
+          background-color: #eef3f8;
+          opacity: 0.85;
+        }
+
+        .task-completed .task-text {
+          text-decoration: line-through;
+          color: var(--completed);
+          opacity: 0.7;
+        }
+
+        @keyframes bounceIn {
+          0% { transform: scale(0.6); opacity: 0; }
+          60% { transform: scale(1.1); opacity: 1; }
+          100% { transform: scale(1); }
+        }
+
+        .badge {
+          background-color: var(--item-color, var(--primary));
+          color: white;
+          font-size: 12px;
+          padding: 2px 8px;
+          border-radius: 20px;
+          margin-left: 8px;
+          font-weight: 500;
+          animation: bounceIn 0.4s ease;
+        }
+
+        .todo-list li form {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          margin: 0;
+        }
+
+        .todo-list li input[type="text"] {
+          height: 34px;
+          padding: 6px 10px;
+          font-size: 14px;
+          border-radius: var(--radius);
+          border: 1px solid var(--border);
+          max-width: 180px;
+        }
+
+        .todo-list li button {
+          height: 36px;
+          padding: 6px 14px;
+          font-size: 14px;
+        }
+
+        .todo-list li form:last-child button {
+          background-color: var(--danger);
+        }
+
+        .todo-list li form:last-child button:hover {
+          background-color: #c0392b;
+        }
+
+        @keyframes shakeAnim {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-4px); }
+          50% { transform: translateX(4px); }
+          75% { transform: translateX(-4px); }
+        }
+
+        .shake {
+          animation: shakeAnim 0.4s;
+          border-color: var(--danger) !important;
+        }
+
+        @media (max-width: 480px) {
+          .container {
+            padding: 20px;
+          }
+
+          form {
+            flex-direction: column;
+            gap: 8px;
+          }
+
+          .todo-list li {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+          }
+
+          .todo-list li form {
+            width: 100%;
+          }
+
+          .todo-list li input[type="text"] {
+            width: 100%;
+          }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>오늘 할 일 정리하기 📝</h1>
+        <p class="subtitle">카테고리별로 정리하고 순서를 마음대로 바꿔보세요!</p>
+        <button class="mode-toggle" onclick="toggleDarkMode()">🌙/☀️</button>
+    </div>
+
+    <div class="filter-group">
+        <button onclick="filterCategory('all')">전체</button>
+        <button onclick="filterCategory('업무')">업무</button>
+        <button onclick="filterCategory('개인')">개인</button>
+        <button onclick="filterCategory('기타')">기타</button>
+    </div>
+
+    <div id="currentCategory" class="current-category">현재 카테고리: 전체</div>
+
+    <form th:action="@{/todos}" method="post" id="addForm">
+        <input type="text" id="taskInput" name="task" placeholder="💡 새로운 할 일 입력..." required />
+        <select id="categorySelect" name="category">
+            <option value="업무">업무</option>
+            <option value="개인">개인</option>
+            <option value="기타">기타</option>
+        </select>
+        <button type="submit"> +추가</button>
+    </form>
+
+    <div class="todo-list">
+        <ul id="taskList">
+            <li th:each="task : ${todos}"
+                th:attr="data-category=${task.category}"
+                th:classappend="${task.completed} ? 'task-completed' : ''"
+                th:style="'--item-color:' + ${task.color}"
+                draggable="true">
+                <form th:action="@{/todos/toggle}" method="post">
+                    <input type="hidden" name="taskId" th:value="${task.id}" />
+                    <input type="checkbox" onclick="this.form.submit()" th:checked="${task.completed}" />
+                </form>
+                <span class="task-text" th:text="${task.description}"></span>
+                <span class="category-badge" th:text="${task.category}"></span>
+                <span class="badge" th:if="${task.completed}">✔ 완료</span>
+                <form th:action="@{/todos/update}" method="post" onsubmit="return confirm('정말로 수정하시겠습니까?')">
+                    <input type="hidden" name="taskId" th:value="${task.id}" />
+                    <input type="text" name="newDescription" placeholder="✏ 수정할 내용" required />
+                    <button>수정</button>
+                </form>
+                <form th:action="@{/todos/delete}" method="post" onsubmit="return fadeAndSubmit(this, '삭제하시겠습니까?')">
+                    <input type="hidden" name="taskId" th:value="${task.id}" />
+                    <button>삭제</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    window.onload = () => {
+      if (localStorage.getItem('mode') === 'dark') {
+        document.body.classList.add('dark');
+      }
+      const savedCat = localStorage.getItem('selectedCategory') || 'all';
+      filterCategory(savedCat);
+
+      const ul = document.getElementById("taskList");
+      let dragged;
+      ul.addEventListener("dragstart", e => {
+        dragged = e.target;
+        e.target.style.opacity = 0.5;
+      });
+      ul.addEventListener("dragend", e => e.target.style.opacity = "");
+      ul.addEventListener("dragover", e => e.preventDefault());
+      ul.addEventListener("drop", e => {
+        e.preventDefault();
+        if (e.target.closest("li") && e.target.closest("li") !== dragged) {
+          ul.insertBefore(dragged, e.target.closest("li").nextSibling);
+        }
+      });
+    };
+
+    function fadeAndSubmit(form, msg) {
+      if (!confirm(msg)) return false;
+      const li = form.closest("li");
+      li.style.transition = "opacity 0.5s";
+      li.style.opacity = 0;
+      setTimeout(() => form.submit(), 500);
+      return false;
+    }
+
+    document.getElementById("addForm").addEventListener("submit", e => {
+      const input = document.getElementById("taskInput");
+      if (!input.value.trim()) {
+        e.preventDefault();
+        input.classList.add("shake");
+        setTimeout(() => input.classList.remove("shake"), 500);
+      }
+    });
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('mode', document.body.classList.contains('dark') ? 'dark' : 'light');
+    }
+
+    function filterCategory(cat) {
+      const items = document.querySelectorAll("#taskList li");
+      items.forEach(li => {
+        const c = li.dataset.category;
+        li.style.display = (cat === 'all' || c === cat) ? 'flex' : 'none';
+      });
+      localStorage.setItem('selectedCategory', cat);
+
+      document.querySelectorAll('.filter-group button').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent === cat || (cat === 'all' && btn.textContent === '전체'));
+      });
+
+      const displayName = cat === 'all' ? '전체' : cat;
+      document.getElementById('currentCategory').textContent = '현재 카테고리: ' + displayName;
+
+      const select = document.getElementById("categorySelect");
+      if (cat !== 'all') {
+        select.value = cat;
+      } else {
+        select.value = "업무";
+      }
+    }
+</script>
+</body>
+</html>
