@@ -5,7 +5,6 @@
     <title>나만의 페이지</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet" />
-    <link rel="icon" href="https://img.icons8.com/fluency/48/rocket.png" />
     <style>
         @font-face {
             font-family: 'MaplestoryOTFBold';
@@ -25,67 +24,9 @@
             color: #eee;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        body.light {
-            background-color: #f8f8f8;
-            color: #222;
-        }
-        body.light .navbar {
-            background-color: #d9e3f0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        body.light .main-content p,
-        body.light .recent-box,
-        body.light .section h3,
-        body.light .card h4 {
-            color: #444;
-        }
-        body.light .recent-box {
-            background-color: #f0f4fc;
-            box-shadow: 0 0 10px #8ab4f8;
-        }
-        body.light .card {
-            background-color: #fff;
-            color: #222;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        }
-        body.light .card:hover {
-            background-color: #e0e7ff;
-            box-shadow: 0 12px 26px rgba(0,0,0,0.15);
-        }
-        body.light .card a {
-            background-color: #1a73e8;
-            color: white;
-            box-shadow: 0 2px 8px #135abdcc;
-        }
-        body.light .card a:hover {
-            background-color: #125ecf;
-            box-shadow: 0 0 12px #1a73e8aa;
-        }
-        body.light .card .dual-buttons button {
-            background-color: #ff7f50;
-            color: white;
-            box-shadow: 0 2px 8px #cc623dcc;
-        }
-        body.light .card .dual-buttons button:hover {
-            background-color: #e0633a;
-            box-shadow: 0 0 12px #ff7f5088;
-        }
-        body.light #searchBox {
-            background-color: #fff;
-            color: #222;
-            box-shadow: inset 0 0 8px #61dafb88;
-        }
-        body.light #searchBox::placeholder {
-            color: #77bbffaa;
         }
 
         .navbar {
-            position: sticky;
-            top: 0;
-            z-index: 999;
             background-color: #2c2c3c;
             padding: 16px 32px;
             display: flex;
@@ -93,32 +34,12 @@
             align-items: center;
             box-shadow: 0 2px 8px rgba(0,0,0,0.5);
             user-select: none;
-            transition: background-color 0.3s, box-shadow 0.3s;
         }
         .navbar h1 {
             font-size: 1.8rem;
             font-weight: 700;
             letter-spacing: 0.05em;
             color: #61dafb;
-            margin: 0;
-        }
-
-        #toggleTheme {
-            background: transparent;
-            border: 2px solid #61dafb;
-            border-radius: 12px;
-            color: #61dafb;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            padding: 6px 14px;
-            user-select: none;
-            transition: background-color 0.25s, color 0.25s;
-        }
-        #toggleTheme:hover, #toggleTheme:focus {
-            background-color: #61dafb;
-            color: #1e1e2f;
-            outline: none;
         }
 
         .main-content {
@@ -143,18 +64,25 @@
             font-weight: 400;
         }
 
+        /* 최근 사용 + 검색 래퍼 */
+        .recent-search-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
         .recent-box {
             background-color: #2a2a3b;
             padding: 12px 20px;
             border-radius: 10px;
-            margin-bottom: 20px;
             color: #9bf1ff;
             font-weight: 600;
             font-size: 1.1rem;
             box-shadow: 0 0 10px #42aaff44;
             display: inline-block;
             user-select: text;
-            transition: background-color 0.3s;
         }
         .recent-box span {
             color: #fff;
@@ -162,11 +90,16 @@
             padding-left: 6px;
         }
 
+        .search-box-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
         #searchBox {
             width: 100%;
             max-width: 360px;
             padding: 10px 14px;
-            margin: 0 auto 40px;
             font-size: 1rem;
             border-radius: 8px;
             border: none;
@@ -175,7 +108,6 @@
             background-color: #2a2a3b;
             color: #eee;
             transition: box-shadow 0.3s ease;
-            user-select: text;
         }
         #searchBox::placeholder {
             color: #77bbffaa;
@@ -222,36 +154,12 @@
             flex-direction: column;
             align-items: center;
             user-select: none;
-            position: relative;
         }
+
         .card:hover, .card:focus-within {
             background-color: #3a3a4d;
             transform: translateY(-6px);
             box-shadow: 0 12px 26px rgba(0,0,0,0.4);
-        }
-
-        .tooltip {
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1a73e8;
-            color: white;
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-            user-select: none;
-            z-index: 10;
-            box-shadow: 0 0 8px #1a73e8bb;
-        }
-        .card:hover .tooltip,
-        .card:focus-within .tooltip {
-            opacity: 1;
-            pointer-events: auto;
         }
 
         .card img {
@@ -259,7 +167,6 @@
             height: 52px;
             margin-bottom: 14px;
             filter: drop-shadow(0 0 2px #42aaffcc);
-            user-select: none;
         }
 
         .card h4 {
@@ -268,7 +175,6 @@
             font-size: 1.15rem;
             color: #aaddff;
             text-shadow: 0 0 4px #61dafbaa;
-            user-select: text;
         }
 
         .card a,
@@ -303,7 +209,6 @@
             color: #fff;
             box-shadow: 0 2px 8px #cc623dcc;
             min-width: 120px;
-            user-select: none;
         }
         .card .dual-buttons button:hover,
         .card .dual-buttons button:focus {
@@ -334,27 +239,27 @@
 <body>
 <nav class="navbar" role="navigation" aria-label="주요 네비게이션">
     <h1>🚀 나만의 페이지</h1>
-    <button id="toggleTheme" aria-pressed="false" aria-label="다크 모드 토글 버튼">라이트 모드</button>
 </nav>
 
 <main class="main-content" role="main" tabindex="-1">
     <h2>환영합니다 😄</h2>
     <p>필요한 기능을 아래에서 선택하세요.</p>
 
-    <div>
-        <div class="recent-box" aria-live="polite" aria-atomic="true" role="status">
+    <div class="recent-search-wrapper">
+        <div class="recent-box" aria-live="polite" aria-atomic="true">
             최근 사용한 기능:<span id="recentFeature"> 없음</span>
         </div>
+        <div class="search-box-wrapper">
+            <input
+                    type="search"
+                    id="searchBox"
+                    placeholder="기능명으로 검색하세요..."
+                    aria-label="기능 검색 입력"
+                    autocomplete="off"
+                    spellcheck="false"
+            />
+        </div>
     </div>
-
-    <input
-            type="search"
-            id="searchBox"
-            placeholder="기능명으로 검색하세요..."
-            aria-label="기능 검색 입력"
-            autocomplete="off"
-            spellcheck="false"
-    />
 
     <div id="featureSections" aria-live="polite" aria-atomic="true"></div>
 </main>
@@ -364,23 +269,23 @@
         {
             title: "📦 기본 기능",
             items: [
-                { name: "계산기", icon: "https://img.icons8.com/fluency/48/calculator.png", type: "calculator", description: "입력식 또는 버튼식 계산기" },
-                { name: "회원 등록", icon: "https://img.icons8.com/color/48/name.png", link: "/register", description: "새로운 회원 등록 페이지" }
+                { name: "계산기", icon: "https://img.icons8.com/fluency/48/calculator.png", type: "calculator" },
+                { name: "회원 등록", icon: "https://img.icons8.com/color/48/name.png", link: "/register" }
             ]
         },
         {
             title: "🎮 게임 / 인터랙션",
             items: [
-                { name: "Up N Down!!", icon: "https://img.icons8.com/color/48/bullseye.png", link: "/guess", description: "숫자 맞추기 게임" },
-                { name: "미로 게임", icon: "https://img.icons8.com/color/48/puzzle.png", link: "/maze", description: "미로 탈출 게임" }
+                { name: "Up N Down!!", icon: "https://img.icons8.com/color/48/bullseye.png", link: "/guess" },
+                { name: "미로 게임", icon: "https://img.icons8.com/color/48/puzzle.png", link: "/maze" }
             ]
         },
         {
             title: "📄 기타 페이지",
             items: [
-                { name: "헬로", icon: "https://img.icons8.com/color/48/speech-bubble--v1.png", link: "/hellos", description: "간단한 인사말 페이지" },
-                { name: "KSJ", icon: "https://img.icons8.com/color/48/person-male.png", link: "/ksj", description: "KSJ 소개 페이지" },
-                { name: "ToDo 리스트", icon: "https://img.icons8.com/color/48/task.png", link: "/todo", description: "할 일 목록 관리" }
+                { name: "헬로", icon: "https://img.icons8.com/color/48/speech-bubble--v1.png", link: "/hellos" },
+                { name: "KSJ", icon: "https://img.icons8.com/color/48/person-male.png", link: "/ksj" },
+                { name: "ToDo 리스트", icon: "https://img.icons8.com/color/48/task.png", link: "/todo" }
             ]
         }
     ];
@@ -388,32 +293,11 @@
     const container = document.getElementById("featureSections");
     const recentFeatureSpan = document.getElementById("recentFeature");
     const searchBox = document.getElementById("searchBox");
-    const toggleThemeBtn = document.getElementById("toggleTheme");
-
-    function applyTheme(theme) {
-        if (theme === "light") {
-            document.body.classList.add("light");
-            toggleThemeBtn.textContent = "다크 모드";
-            toggleThemeBtn.setAttribute("aria-pressed", "true");
-        } else {
-            document.body.classList.remove("light");
-            toggleThemeBtn.textContent = "라이트 모드";
-            toggleThemeBtn.setAttribute("aria-pressed", "false");
-        }
-        localStorage.setItem("theme", theme);
-    }
-
-    toggleThemeBtn.addEventListener("click", () => {
-        const currentTheme = localStorage.getItem("theme") || "dark";
-        applyTheme(currentTheme === "dark" ? "light" : "dark");
-    });
 
     function renderSections(filteredData = featureData) {
         container.innerHTML = "";
-
         filteredData.forEach(section => {
-            const visibleItems = section.items.filter(item => item.visible !== false);
-            if (visibleItems.length === 0) return;
+            if (!section.items.some(item => item.visible !== false)) return;
 
             const sectionDiv = document.createElement("div");
             sectionDiv.className = "section";
@@ -425,10 +309,12 @@
             const grid = document.createElement("div");
             grid.className = "card-grid";
 
-            visibleItems.forEach(item => {
+            section.items.forEach(item => {
+                if (item.visible === false) return;
+
                 const card = document.createElement("div");
                 card.className = "card";
-                card.setAttribute("tabindex", "0");
+                card.tabIndex = 0;
 
                 const img = document.createElement("img");
                 img.src = item.icon;
@@ -439,46 +325,39 @@
                 name.textContent = item.name;
                 card.appendChild(name);
 
-                const tooltip = document.createElement("div");
-                tooltip.className = "tooltip";
-                tooltip.textContent = item.description;
-                card.appendChild(tooltip);
+                if (item.type === "calculator") {
+                    const btnContainer = document.createElement("div");
+                    btnContainer.className = "dual-buttons";
 
-                if (item.link) {
+                    const btnInput = document.createElement("button");
+                    btnInput.textContent = "입력식 계산기";
+                    btnInput.setAttribute("aria-label", "입력식 계산기 실행");
+                    btnInput.onclick = () => {
+                        localStorage.setItem("recentFeature", "입력식 계산기");
+                        window.location.href = "/calculator";
+                    };
+
+                    const btnButton = document.createElement("button");
+                    btnButton.textContent = "버튼식 계산기";
+                    btnButton.setAttribute("aria-label", "버튼식 계산기 실행");
+                    btnButton.onclick = () => {
+                        localStorage.setItem("recentFeature", "버튼식 계산기");
+                        window.location.href = "/button-calculator";
+                    };
+
+                    btnContainer.appendChild(btnInput);
+                    btnContainer.appendChild(btnButton);
+                    card.appendChild(btnContainer);
+                } else {
                     const link = document.createElement("a");
                     link.href = item.link;
-                    link.textContent = "이동하기";
-                    link.setAttribute("aria-label", item.name + " 페이지로 이동");
+                    link.textContent = "이동";
+                    link.setAttribute("aria-label", `${item.name} 페이지로 이동`);
+                    link.onclick = () => {
+                        localStorage.setItem("recentFeature", item.name);
+                    };
                     card.appendChild(link);
-                } else if (item.type === "calculator") {
-                    const dualButtons = document.createElement("div");
-                    dualButtons.className = "dual-buttons";
-
-                    const btn1 = document.createElement("button");
-                    btn1.textContent = "입력식 계산기";
-                    btn1.setAttribute("aria-label", "입력식 계산기 열기");
-                    btn1.onclick = () => {
-                        alert("입력식 계산기 기능 실행!");
-                        saveRecent(item.name);
-                    };
-
-                    const btn2 = document.createElement("button");
-                    btn2.textContent = "버튼식 계산기";
-                    btn2.setAttribute("aria-label", "버튼식 계산기 열기");
-                    btn2.onclick = () => {
-                        alert("버튼식 계산기 기능 실행!");
-                        saveRecent(item.name);
-                    };
-
-                    dualButtons.appendChild(btn1);
-                    dualButtons.appendChild(btn2);
-                    card.appendChild(dualButtons);
                 }
-
-                card.addEventListener("click", () => {
-                    saveRecent(item.name);
-                });
-
                 grid.appendChild(card);
             });
 
@@ -487,36 +366,35 @@
         });
     }
 
-    function saveRecent(featureName) {
-        localStorage.setItem("recentFeature", featureName);
-        recentFeatureSpan.textContent = featureName;
-    }
-
-    searchBox.addEventListener("input", () => {
-        const query = searchBox.value.trim().toLowerCase();
-
-        featureData.forEach(section => {
-            section.items.forEach(item => {
-                item.visible = item.name.toLowerCase().includes(query);
+    function filterFeatures(keyword) {
+        const lowerKeyword = keyword.trim().toLowerCase();
+        if (!lowerKeyword) {
+            featureData.forEach(section => {
+                section.items.forEach(item => item.visible = true);
             });
-        });
-
-        renderSections(featureData);
-    });
-
-    function init() {
-        const recent = localStorage.getItem("recentFeature");
-        if (recent) {
-            recentFeatureSpan.textContent = recent;
+            return featureData;
         }
 
-        const savedTheme = localStorage.getItem("theme") || "dark";
-        applyTheme(savedTheme);
-
-        renderSections(featureData);
+        return featureData.map(section => {
+            const filteredItems = section.items.map(item => {
+                const match = item.name.toLowerCase().includes(lowerKeyword);
+                return { ...item, visible: match };
+            });
+            return { ...section, items: filteredItems };
+        });
     }
 
-    init();
+    window.onload = function () {
+        const recent = localStorage.getItem("recentFeature");
+        if (recent) recentFeatureSpan.innerText = recent;
+
+        renderSections();
+
+        searchBox.addEventListener("input", e => {
+            const filtered = filterFeatures(e.target.value);
+            renderSections(filtered);
+        });
+    };
 </script>
 </body>
 </html>
