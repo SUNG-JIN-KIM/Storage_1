@@ -234,6 +234,71 @@
                 padding: 14px 20px;
             }
         }
+
+        /* 메모장 스타일 */
+        .memo-list {
+            margin-top: 20px;
+            width: 90%;
+            max-width: 600px;
+        }
+
+        .memo-item {
+            background-color: #2a2a3b;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #bbb;
+        }
+
+        .memo-item button {
+            background-color: #ff7f50;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .memo-item button:hover {
+            background-color: #e0633a;
+        }
+
+        .add-memo {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .add-memo input {
+            width: 70%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            background-color: #2a2a3b;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .add-memo button {
+            padding: 10px 16px;
+            background-color: #61dafb;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .add-memo button:hover {
+            background-color: #42aaff;
+        }
     </style>
 </head>
 <body>
@@ -270,7 +335,8 @@
             title: "📦 기본 기능",
             items: [
                 { name: "계산기", icon: "https://img.icons8.com/fluency/48/calculator.png", type: "calculator" },
-                { name: "회원 등록", icon: "https://img.icons8.com/color/48/name.png", link: "/register" }
+                { name: "회원 등록", icon: "https://img.icons8.com/color/48/name.png", link: "/register" },
+                { name: "메모장", icon: "https://img.icons8.com/color/48/notepad.png", link: "/memo" }
             ]
         },
         {
@@ -396,5 +462,6 @@
         });
     };
 </script>
+
 </body>
 </html>
